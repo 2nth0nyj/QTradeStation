@@ -13,6 +13,10 @@ add_executable(${PROJECT_NAME}
     src/main.cpp
     src/mainwindow.h
     src/mainwindow.cpp
+    src/dashboardwidget.h
+    src/dashboardwidget.cpp
+    src/tradingcardwidget.h
+    src/tradingcardwidget.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets)
