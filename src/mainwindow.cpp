@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(centralWidget);
 
     // Left navigation tree, docked like a trade-station side panel.
-    auto *navDock = new QDockWidget(QStringLiteral("导航"), this);
+    auto *navDock = new QDockWidget(QStringLiteral("Navigation"), this);
     navDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     navDock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
     navDock->setObjectName(QStringLiteral("NavDock"));
@@ -63,5 +63,5 @@ void MainWindow::buildTree()
     addFolder(m_tree->invisibleRootItem(), QStringLiteral("Accounts"));
     addFolder(m_tree->invisibleRootItem(), QStringLiteral("Settings"));
     addFolder(m_tree->invisibleRootItem(), QStringLiteral("Help"));
-    
+
 }
