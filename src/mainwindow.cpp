@@ -64,6 +64,9 @@ void MainWindow::buildTree()
     addFolder(m_tree->invisibleRootItem(), QStringLiteral("Accounts"));
     addFolder(m_tree->invisibleRootItem(), QStringLiteral("Settings"));
     addFolder(m_tree->invisibleRootItem(), QStringLiteral("Help"));
+
+    // Select "Dashboard" by default so the tree highlights the active page.
+    m_tree->setCurrentItem(m_tree->topLevelItem(0));
 }
 
 void MainWindow::setupDashboard()

@@ -14,8 +14,7 @@ TradingCardWidget::TradingCardWidget(const QString &exchange,
 {
     setFrameStyle(QFrame::Box | QFrame::Raised);
     setLineWidth(2);
-    setMinimumSize(200, 160);
-    setMaximumSize(260, 200);
+    setFixedSize(240, 190);
 
     auto *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(12, 10, 12, 10);

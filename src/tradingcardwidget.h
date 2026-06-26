@@ -16,6 +16,11 @@ public:
                                double price,
                                QWidget *parent = nullptr);
 
+    // Fixed card dimensions, exposed so the dashboard grid can compute how
+    // many columns fit the current viewport width.
+    static constexpr int CardWidth = 240;
+    static constexpr int CardHeight = 190;
+
 signals:
     void buyClicked(const QString &exchange, const QString &symbol);
     void sellClicked(const QString &exchange, const QString &symbol);
