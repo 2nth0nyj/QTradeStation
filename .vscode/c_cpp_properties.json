@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        {
+            "name": "LLVM-MinGW-Qt6",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src/**",
+                "D:/Sdk/Qt/6.11.1/llvm-mingw_64/include/**",
+                "D:/Sdk/Qt/6.11.1/llvm-mingw_64/include/QtCore",
+                "D:/Sdk/Qt/6.11.1/llvm-mingw_64/include/QtGui",
+                "D:/Sdk/Qt/6.11.1/llvm-mingw_64/include/QtWidgets"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "QT_CORE_LIB",
+                "QT_GUI_LIB",
+                "QT_WIDGETS_LIB"
+            ],
+            "compilerPath": "D:/Sdk/Qt/Tools/llvm-mingw1706_64/bin/clang++.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-clang-x64",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        }
+    ],
+    "version": 4
+}
