@@ -17,18 +17,24 @@ class DashboardWidget : public QWidget
 public:
     explicit DashboardWidget(QWidget *parent = nullptr);
 
-    void addCard(const QString &exchange,
+    void addCard(const QString &market,
                  const QString &symbol,
-                 double price);
+                 double price,
+                 const QString &broker = QStringLiteral("Futu"));
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
     void showEvent(QShowEvent *event) override;
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
     // Recompute the number of columns for the current width and re-place
     // every card so the grid stays neat and fills the available space.
     void relayoutGrid();
+
+    // Swap the dragged card with the card occupying the grid cell under the
+    // given point (in container coordinates).
+    void handleCardDrop(const QPoint &pos, qintptr draggedPtr);
 
     QScrollArea *m_scrollArea;
     QWidget *m_cardContainer;

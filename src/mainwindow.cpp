@@ -73,16 +73,16 @@ void MainWindow::setupDashboard()
 {
     m_dashboard = new DashboardWidget(this);
 
-    // Add some sample trading cards
-    m_dashboard->addCard("NYSE",      "AAPL",  210.45);
-    m_dashboard->addCard("NASDAQ",    "GOOGL", 185.20);
-    m_dashboard->addCard("NASDAQ",    "MSFT",  425.30);
-    m_dashboard->addCard("NYSE",      "JPM",   198.75);
-    m_dashboard->addCard("NYSE",      "TSLA",  245.60);
-    m_dashboard->addCard("NASDAQ",    "AMZN",  178.90);
-    m_dashboard->addCard("NYSE",      "BAC",   39.55);
-    m_dashboard->addCard("NASDAQ",    "NVDA",  880.10);
-    m_dashboard->addCard("NYSE",      "WMT",   172.30);
+    // Add some sample trading cards, each tagged with its broker / venue.
+    m_dashboard->addCard("NYSE",      "AAPL",  210.45, "Futu");
+    m_dashboard->addCard("NASDAQ",    "GOOGL", 185.20, "IB");
+    m_dashboard->addCard("NASDAQ",    "MSFT",  425.30, "Futu");
+    m_dashboard->addCard("NYSE",      "JPM",   198.75, "IB");
+    m_dashboard->addCard("NYSE",      "TSLA",  245.60, "Binance");
+    m_dashboard->addCard("NASDAQ",    "AMZN",  178.90, "Futu");
+    m_dashboard->addCard("NYSE",      "BAC",   39.55,  "IB");
+    m_dashboard->addCard("NASDAQ",    "NVDA",  880.10, "Binance");
+    m_dashboard->addCard("NYSE",      "WMT",   172.30, "Futu");
 
     m_stackedWidget->addWidget(m_dashboard);
     m_stackedWidget->setCurrentWidget(m_dashboard);

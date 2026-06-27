@@ -7,6 +7,11 @@
 #include <QLabel>
 #include <QResizeEvent>
 #include <QShowEvent>
+#include <QEvent>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QMimeData>
+#include <QByteArray>
 #include <QtMath>
 
 DashboardWidget::DashboardWidget(QWidget *parent)
@@ -30,6 +35,9 @@ DashboardWidget::DashboardWidget(QWidget *parent)
     m_scrollArea->setFrameShape(QFrame::NoFrame);
 
     m_cardContainer = new QWidget();
+    m_cardContainer->setAcceptDrops(true);
+    m_cardContainer->installEventFilter(this);
+
     m_gridLayout = new QGridLayout(m_cardContainer);
     m_gridLayout->setContentsMargins(16, 8, 16, 16);
     m_gridLayout->setSpacing(16);
@@ -39,20 +47,21 @@ DashboardWidget::DashboardWidget(QWidget *parent)
     outerLayout->addWidget(m_scrollArea);
 }
 
-void DashboardWidget::addCard(const QString &exchange,
+void DashboardWidget::addCard(const QString &market,
                                const QString &symbol,
-                               double price)
+                               double price,
+                               const QString &broker)
 {
-    auto *card = new TradingCardWidget(exchange, symbol, price, m_cardContainer);
+    auto *card = new TradingCardWidget(market, symbol, price, broker, m_cardContainer);
     m_cards.append(card);
 
     connect(card, &TradingCardWidget::buyClicked, this,
-            [](const QString &ex, const QString &sym) {
-                qDebug("Buy  %s / %s", qPrintable(ex), qPrintable(sym));
+            [](const QString &broker, const QString &sym) {
+                qDebug("Buy  %s / %s", qPrintable(broker), qPrintable(sym));
             });
     connect(card, &TradingCardWidget::sellClicked, this,
-            [](const QString &ex, const QString &sym) {
-                qDebug("Sell %s / %s", qPrintable(ex), qPrintable(sym));
+            [](const QString &broker, const QString &sym) {
+                qDebug("Sell %s / %s", qPrintable(broker), qPrintable(sym));
             });
 
     relayoutGrid();
@@ -111,4 +120,59 @@ void DashboardWidget::relayoutGrid()
         const int col = i % columns;
         m_gridLayout->addWidget(m_cards.at(i), row, col);
     }
+}
+
+bool DashboardWidget::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched == m_cardContainer) {
+        const auto type = event->type();
+        if (type == QEvent::DragEnter || type == QEvent::DragMove) {
+            auto *de = static_cast<QDragEnterEvent *>(event);
+            if (de->mimeData()->hasFormat(QLatin1String(TradingCardWidget::CardMime))) {
+                de->acceptProposedAction();
+                return true;
+            }
+            return false;
+        }
+        if (type == QEvent::Drop) {
+            auto *drop = static_cast<QDropEvent *>(event);
+            const QByteArray data =
+                drop->mimeData()->data(QLatin1String(TradingCardWidget::CardMime));
+            if (data.size() == sizeof(qintptr)) {
+                const qintptr ptr = *reinterpret_cast<const qintptr *>(data.constData());
+                handleCardDrop(drop->position().toPoint(), ptr);
+                drop->acceptProposedAction();
+                return true;
+            }
+            return false;
+        }
+    }
+    return QWidget::eventFilter(watched, event);
+}
+
+void DashboardWidget::handleCardDrop(const QPoint &pos, qintptr draggedPtr)
+{
+    auto *dragged = reinterpret_cast<TradingCardWidget *>(draggedPtr);
+    if (!dragged || !m_cards.contains(dragged))
+        return;
+
+    // Find which card's rect the drop landed on (in container coordinates).
+    TradingCardWidget *target = nullptr;
+    for (TradingCardWidget *card : m_cards) {
+        if (card == dragged)
+            continue;
+        if (card->geometry().contains(pos)) {
+            target = card;
+            break;
+        }
+    }
+    if (!target)
+        return;
+
+    // Swap their positions in the ordered list, then re-place the whole grid
+    // so the two cards exchange cells cleanly.
+    const int srcIdx = m_cards.indexOf(dragged);
+    const int dstIdx = m_cards.indexOf(target);
+    m_cards.swapItemsAt(srcIdx, dstIdx);
+    relayoutGrid();
 }
