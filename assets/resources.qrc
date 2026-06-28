@@ -1,0 +1,7 @@
+﻿<RCC>
+    <qresource prefix="/">
+        <file>futu.svg</file>
+        <file>ib.svg</file>
+        <file>binance.svg</file>
+    </qresource>
+</RCC>

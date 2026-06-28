@@ -2,7 +2,6 @@
 
 #include <QLabel>
 #include <QPushButton>
-#include <QComboBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFont>
@@ -19,18 +18,12 @@
 #include <QPalette>
 #include <QStyle>
 
-const QStringList TradingCardWidget::Brokers = {
-    QStringLiteral("Futu"),
-    QStringLiteral("IB"),
-    QStringLiteral("Binance"),
-};
-
 TradingCardWidget::TradingCardWidget(const QString &market,
                                      const QString &symbol,
                                      double price,
                                      const QString &broker,
                                      QWidget *parent)
-    : QFrame(parent)
+    : QFrame(parent), m_broker(broker)
 {
     setFrameStyle(QFrame::Box | QFrame::Raised);
     setLineWidth(2);
@@ -40,7 +33,7 @@ TradingCardWidget::TradingCardWidget(const QString &market,
     mainLayout->setContentsMargins(12, 10, 12, 10);
     mainLayout->setSpacing(6);
 
-    // Header row: market (e.g. NYSE/NASDAQ) on the left, broker selector and
+    // Header row: market (e.g. NYSE/NASDAQ) on the left, broker icon and
     // close button on the right — all aligned in one row.
     auto *headerLayout = new QHBoxLayout();
     headerLayout->setSpacing(8);
@@ -54,15 +47,12 @@ TradingCardWidget::TradingCardWidget(const QString &market,
     headerLayout->addWidget(m_exchangeLabel);
     headerLayout->addStretch();
 
-    m_brokerCombo = new QComboBox(this);
-    m_brokerCombo->addItems(Brokers);
-    m_brokerCombo->setCurrentText(broker);
-    m_brokerCombo->setStyleSheet(
-        "QComboBox {"
-        "  font-size: 9pt;"
-        "  padding: 1px 4px;"
-        "}");
-    headerLayout->addWidget(m_brokerCombo);
+    // Broker icon (replaces the old combo box)
+    m_brokerIcon = new QLabel(this);
+    m_brokerIcon->setFixedSize(24, 24);
+    m_brokerIcon->setScaledContents(true);
+    loadBrokerIcon(broker);
+    headerLayout->addWidget(m_brokerIcon);
 
     // Close button (X) to remove this card — aligned in the same header row
     auto *closeButton = new QPushButton(QStringLiteral("✕"), this);
@@ -142,10 +132,10 @@ TradingCardWidget::TradingCardWidget(const QString &market,
 
     // Connect signals — emit with the broker that is currently selected.
     connect(m_buyButton, &QPushButton::clicked, this, [this, symbol]() {
-        emit buyClicked(m_brokerCombo->currentText(), symbol);
+        emit buyClicked(m_broker, symbol);
     });
     connect(m_sellButton, &QPushButton::clicked, this, [this, symbol]() {
-        emit sellClicked(m_brokerCombo->currentText(), symbol);
+        emit sellClicked(m_broker, symbol);
     });
     connect(closeButton, &QPushButton::clicked, this, [this, symbol]() {
         emit closeClicked(symbol);
@@ -158,6 +148,24 @@ TradingCardWidget::TradingCardWidget(const QString &market,
     m_priceTimer->setInterval(QRandomGenerator::global()->bounded(2000, 5001));
     connect(m_priceTimer, &QTimer::timeout, this, &TradingCardWidget::updatePrice);
     m_priceTimer->start();
+}
+
+void TradingCardWidget::loadBrokerIcon(const QString &broker)
+{
+    QString iconPath;
+    if (broker == QStringLiteral("Futu"))
+        iconPath = QStringLiteral(":/futu.svg");
+    else if (broker == QStringLiteral("IB"))
+        iconPath = QStringLiteral(":/ib.svg");
+    else if (broker == QStringLiteral("Binance"))
+        iconPath = QStringLiteral(":/binance.svg");
+    else
+        return;
+
+    QPixmap pix(iconPath);
+    if (!pix.isNull()) {
+        m_brokerIcon->setPixmap(pix);
+    }
 }
 
 void TradingCardWidget::updatePrice()

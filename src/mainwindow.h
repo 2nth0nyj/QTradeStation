@@ -24,8 +24,7 @@ private:
     void buildTree();
     void setupDashboard();
     void setupPlaceholderPages();
-
-    QLabel *m_label;
+    
     QTreeWidget *m_tree;
     QStackedWidget *m_stackedWidget;
     DashboardWidget *m_dashboard;

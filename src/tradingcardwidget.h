@@ -2,11 +2,9 @@
 #define TRADINGCARDWIDGET_H
 
 #include <QFrame>
-#include <QStringList>
 
 class QLabel;
 class QPushButton;
-class QComboBox;
 class QTimer;
 class QVariantAnimation;
 class QMouseEvent;
@@ -27,9 +25,6 @@ public:
     static constexpr int CardWidth = 240;
     static constexpr int CardHeight = 190;
 
-    // Supported broker / data sources for the per-card selector.
-    static const QStringList Brokers;
-
     // Mime type used when dragging a card so the dashboard can identify it.
     static constexpr const char *CardMime = "application/x-qtrade-card";
 
@@ -46,11 +41,12 @@ protected:
 
 private:
     QLabel *m_exchangeLabel;
-    QComboBox *m_brokerCombo;
+    QLabel *m_brokerIcon;
     QLabel *m_symbolLabel;
     QLabel *m_priceLabel;
     QPushButton *m_buyButton;
     QPushButton *m_sellButton;
+    QString m_broker;
 
     // Position where the mouse was pressed, used as the drag hotspot.
     QPoint m_dragStartPos;
@@ -60,6 +56,7 @@ private:
     QTimer *m_priceTimer;
     QVariantAnimation *m_flashAnimation;
 
+    void loadBrokerIcon(const QString &broker);
     void updatePrice();
     void flashBackground(const QColor &flashColor);
 };

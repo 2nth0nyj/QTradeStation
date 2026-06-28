@@ -17,6 +17,7 @@ add_executable(${PROJECT_NAME}
     src/dashboardwidget.cpp
     src/tradingcardwidget.h
     src/tradingcardwidget.cpp
+    assets/resources.qrc
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets)
