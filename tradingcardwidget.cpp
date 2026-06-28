@@ -183,12 +183,10 @@ void TradingCardWidget::updatePrice()
 
 void TradingCardWidget::flashBackground(const QColor &flashColor)
 {
-    // Stop any ongoing flash animation and clear the pointer
+    // Stop any ongoing flash animation
     if (m_flashAnimation) {
         m_flashAnimation->stop();
-        // Disconnect to prevent finished() from deleting again
-        m_flashAnimation->disconnect();
-        m_flashAnimation->deleteLater();
+        delete m_flashAnimation;
         m_flashAnimation = nullptr;
     }
 
@@ -205,7 +203,6 @@ void TradingCardWidget::flashBackground(const QColor &flashColor)
     anim->setEndValue(0);
     anim->setEasingCurve(QEasingCurve::OutQuad);
     connect(anim, &QVariantAnimation::valueChanged, this, [this, flashColor](const QVariant &value) {
-        if (!m_priceLabel) return; // guard against deleted card
         int alpha = value.toInt();
         QPalette p = palette();
         QColor c = flashColor;
@@ -215,7 +212,6 @@ void TradingCardWidget::flashBackground(const QColor &flashColor)
     });
     connect(anim, &QVariantAnimation::finished, this, [this]() {
         setAutoFillBackground(false);
-        m_flashAnimation = nullptr;
     });
     anim->start(QAbstractAnimation::DeleteWhenStopped);
     m_flashAnimation = anim;
