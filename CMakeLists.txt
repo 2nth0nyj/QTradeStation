@@ -17,6 +17,8 @@ add_executable(${PROJECT_NAME}
     src/dashboardwidget.cpp
     src/tradingcardwidget.h
     src/tradingcardwidget.cpp
+    src/orderwidget.h
+    src/orderwidget.cpp
     assets/resources.qrc
 )
 

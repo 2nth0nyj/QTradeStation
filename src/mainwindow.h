@@ -8,6 +8,7 @@ class QTreeWidget;
 class QTreeWidgetItem;
 class QStackedWidget;
 class DashboardWidget;
+class OrderWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -23,11 +24,13 @@ private slots:
 private:
     void buildTree();
     void setupDashboard();
+    void setupOrders();
     void setupPlaceholderPages();
-    
+
     QTreeWidget *m_tree;
     QStackedWidget *m_stackedWidget;
     DashboardWidget *m_dashboard;
+    OrderWidget *m_orderWidget;
     QList<QWidget *> m_placeholderPages;
 };
 

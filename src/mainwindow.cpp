@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "dashboardwidget.h"
+#include "orderwidget.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -33,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     buildTree();
     setupDashboard();
+    setupOrders();
     setupPlaceholderPages();
 
     // Connect tree item clicks
@@ -173,12 +175,23 @@ void MainWindow::setupPlaceholderPages()
     }
 }
 
+void MainWindow::setupOrders()
+{
+    m_orderWidget = new OrderWidget(this);
+    m_stackedWidget->addWidget(m_orderWidget);
+}
+
 void MainWindow::onTreeItemClicked(QTreeWidgetItem *item, int /*column*/)
 {
     const QString text = item->text(0);
 
     if (text == QStringLiteral("Dashboard")) {
         m_stackedWidget->setCurrentWidget(m_dashboard);
+        return;
+    }
+
+    if (text == QStringLiteral("Orders")) {
+        m_stackedWidget->setCurrentWidget(m_orderWidget);
         return;
     }
 
